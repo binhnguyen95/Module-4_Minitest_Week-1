@@ -1,10 +1,12 @@
 package com.example.module4_minitesttuan1.config;
 
 
-import com.example.module4_minitesttuan1.repository.RepoInterface.IProductRepository;
-import com.example.module4_minitesttuan1.repository.ProductRepository;
+import com.example.module4_minitesttuan1.formatter.ProvinceFormatter;
+import com.example.module4_minitesttuan1.repository.IProductRepository;
+import com.example.module4_minitesttuan1.service.ProvinceService;
 import com.example.module4_minitesttuan1.service.ServiceInterface.IProductService;
 import com.example.module4_minitesttuan1.service.ProductService;
+import com.example.module4_minitesttuan1.service.ServiceInterface.IProvinceService;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,6 +16,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.format.FormatterRegistry;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.JpaVendorAdapter;
@@ -41,6 +45,7 @@ import java.util.Properties;
 @EnableTransactionManagement
 @ComponentScan("com.example.module4_minitesttuan1.controller")
 @PropertySource("classpath:upload_file.properties")
+@EnableJpaRepositories("com.example.module4_minitesttuan1.repository")
 public class AppConfig implements WebMvcConfigurer, ApplicationContextAware {
     @Value("${file-upload}")
     private String fileUpload;
@@ -101,7 +106,7 @@ public class AppConfig implements WebMvcConfigurer, ApplicationContextAware {
     public DataSource dataSource() {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
         dataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
-        dataSource.setUrl("jdbc:mysql://localhost:3306/module4_minitest1");
+        dataSource.setUrl("jdbc:mysql://localhost:3306/Spring_Data_Repo_TH1");
         dataSource.setUsername("root");
         dataSource.setPassword("chetdicon");
         return dataSource;
@@ -121,16 +126,6 @@ public class AppConfig implements WebMvcConfigurer, ApplicationContextAware {
         return properties;
     }
 
-    @Bean
-    public IProductRepository customerRepository() {
-        return new ProductRepository();
-    }
-
-    @Bean
-    public IProductService customerService() {
-        return new ProductService();
-    }
-
 
     //Cấu hình upload file
     @Override
@@ -145,6 +140,20 @@ public class AppConfig implements WebMvcConfigurer, ApplicationContextAware {
         CommonsMultipartResolver resolver = new CommonsMultipartResolver();
         resolver.setMaxUploadSizePerFile(52428800);
         return resolver;
+    }
+
+    @Override
+    public void addFormatters(FormatterRegistry registry) {
+        registry.addFormatter(new ProvinceFormatter(applicationContext.getBean(ProvinceService.class)));
+    }
+
+    @Bean
+    public IProductService productService() {
+        return new ProductService();
+    }
+    @Bean
+    public IProvinceService provinceService() {
+        return new ProvinceService();
     }
 }
 

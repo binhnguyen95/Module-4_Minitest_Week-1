@@ -12,14 +12,19 @@ public class Product {
     private Double price;
     private String image;
 
+    @ManyToOne
+    @JoinColumn(name = "province_id")
+    private Province province;
+
     public Product() {
     }
 
-    public Product(Long id, String name, Double price, String image) {
+    public Product(Long id, String name, Double price, String image, Province province) {
         this.id = id;
         this.name = name;
         this.price = price;
         this.image = image;
+        this.province = province;
     }
 
     @Override
@@ -57,5 +62,13 @@ public class Product {
 
     public void setImage(String image) {
         this.image = image;
+    }
+
+    public Province getProvince() {
+        return province;
+    }
+
+    public void setProvince(Province province) {
+        this.province = province;
     }
 }

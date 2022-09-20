@@ -7,6 +7,8 @@ public class ProductForm {
     private String name;
     private Double price;
     private MultipartFile image;
+    private Province province;
+
     public ProductForm(){
     }
 
@@ -47,5 +49,13 @@ public class ProductForm {
 
     public void setImage(MultipartFile image) {
         this.image = image;
+    }
+
+    public Province getProvince() {
+        return province;
+    }
+
+    public void setProvince(Province province) {
+        this.province = province;
     }
 }

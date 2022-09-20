@@ -2,7 +2,9 @@ package com.example.module4_minitesttuan1.controller;
 
 import com.example.module4_minitesttuan1.model.Product;
 import com.example.module4_minitesttuan1.model.ProductForm;
+import com.example.module4_minitesttuan1.model.Province;
 import com.example.module4_minitesttuan1.service.ServiceInterface.IProductService;
+import com.example.module4_minitesttuan1.service.ServiceInterface.IProvinceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
@@ -18,7 +20,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
+import java.util.Optional;
 
 @Controller
 @PropertySource("classpath:upload_file.properties")
@@ -29,9 +31,17 @@ public class ProductController {
     @Autowired
     private IProductService productService;
 
+    @Autowired
+    private IProvinceService provinceService;
+
+    @ModelAttribute("provinces")
+    public Iterable<Province> provinces(){
+        return provinceService.findAll();
+    }
+
     @GetMapping("/products")
     public ModelAndView listCustomers() {
-        List<Product> products = productService.findAll();
+        Iterable<Product> products = productService.findAll();
         ModelAndView modelAndView = new ModelAndView("/list");
         modelAndView.addObject("products", products);
         return modelAndView;
@@ -54,7 +64,7 @@ public class ProductController {
             ex.printStackTrace();
         }
         Product product = new Product(productForm.getId(), productForm.getName(),
-                productForm.getPrice(), fileName);
+                        productForm.getPrice(), fileName, productForm.getProvince());
         productService.save(product);
         ModelAndView modelAndView = new ModelAndView("/create");
         modelAndView.addObject("productForm", new ProductForm());
@@ -64,10 +74,10 @@ public class ProductController {
 
     @GetMapping("/edit/{id}")
     public ModelAndView showEditForm(@PathVariable Long id) {
-        Product product = productService.findById(id);
-        if (product != null) {
+        Optional<Product> product = productService.findById(id);
+        if (product.isPresent()) {
             ModelAndView modelAndView = new ModelAndView("/edit");
-            modelAndView.addObject("product", product);
+            modelAndView.addObject("product", product.get());
             return modelAndView;
         } else {
             ModelAndView modelAndView = new ModelAndView("/error.404");
@@ -86,10 +96,10 @@ public class ProductController {
 
     @GetMapping("/delete/{id}")
     public ModelAndView showDeleteForm(@PathVariable Long id) {
-        Product product = productService.findById(id);
-        if (product != null) {
+        Optional<Product> product = productService.findById(id);
+        if (product.isPresent()) {
             ModelAndView modelAndView = new ModelAndView("/delete");
-            modelAndView.addObject("product", product);
+            modelAndView.addObject("product", product.get());
             return modelAndView;
 
         } else {
@@ -105,8 +115,8 @@ public class ProductController {
 
     @GetMapping("/view/{id}")
     public String showDetail(@PathVariable long id, Model model) {
-        Product product = productService.findById(id);
-        model.addAttribute("detail", product);
+        Optional<Product> product = productService.findById(id);
+        model.addAttribute("detail", product.get());
         return "/detail";
     }
 }

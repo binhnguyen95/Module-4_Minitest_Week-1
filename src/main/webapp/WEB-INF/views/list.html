@@ -5,18 +5,22 @@
     <title>Title</title>
 </head>
 <body>
-<a href="/create">Create new product</a>
+<a href="/create">Create new product</a> <br>
+<a href="/provinces">Province list</a>
 <h1>Product</h1>
 <table border="1" id="products">
     <tr>
         <th>Name</th>
         <th>Price</th>
+        <th>Province</th>
         <th>Image</th>
     </tr>
     <th:block th:each="product : ${products}">
         <tr>
             <td th:text="${product.name}"></td>
             <td th:text="${product.price}"></td>
+            <td th:if="${product.province}" th:text="${product.province.name}"></td>
+            <td th:unless="${product.province}"></td>
             <td><img width="150" height="150" th:src="@{'/image/' + ${product.image}}" alt=""></td>
             <td><a th:href="@{/edit/__${product.id}__ }">Edit</a></td>
             <td><a th:href="@{/delete/__${product.id}__ }">Delete</a></td>
