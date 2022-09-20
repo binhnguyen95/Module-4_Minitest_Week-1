@@ -74,6 +74,7 @@ public class ProductController {
             return modelAndView;
         }
     }
+
     @PostMapping("/edit")
     public ModelAndView updateCustomer(@ModelAttribute("customer") Product product) {
         productService.save(product);
@@ -82,6 +83,7 @@ public class ProductController {
         modelAndView.addObject("message", "Product updated successfully");
         return modelAndView;
     }
+
     @GetMapping("/delete/{id}")
     public ModelAndView showDeleteForm(@PathVariable Long id) {
         Product product = productService.findById(id);

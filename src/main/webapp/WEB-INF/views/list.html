@@ -20,7 +20,7 @@
             <td><img width="150" height="150" th:src="@{'/image/' + ${product.image}}" alt=""></td>
             <td><a th:href="@{/edit/__${product.id}__ }">Edit</a></td>
             <td><a th:href="@{/delete/__${product.id}__ }">Delete</a></td>
-            <td><a th:href="@{/view/__${product.id}__}">View Detail</a></td>
+            <td><a th:href="@{/view/__${product.id}__}">Detail</a></td>
         </tr>
     </th:block>
 </table>
